@@ -11,6 +11,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { RxCross2 } from "react-icons/rx";
 const packageData = [
   {
     name: "Usama Bhatti",
@@ -59,7 +60,7 @@ const packageData = [
 ];
 
 const UploadCVData = () => {
-    const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(null);
   const [currentStep, setCurrentStep] = useState(1);
@@ -82,13 +83,13 @@ const UploadCVData = () => {
         "Error fetching inquiries:",
         err.response?.data || err.message
       );
-    }finally {
-        setLoading(false); // Stop loading after API call completes
-      }
+    } finally {
+      setLoading(false); // Stop loading after API call completes
+    }
   };
   useEffect(() => {
     getAllInquiries();
-  }, [currentStep,searchQuery]);
+  }, [currentStep, searchQuery]);
   const deleteInquiry = async (id) => {
     try {
       await api.delete(`https://api.jobyz.ch/api/contact/job/${id}`);
@@ -125,9 +126,17 @@ const UploadCVData = () => {
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto ">
           <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0 mt-8">
             <DialogPanel className="w-full max-w-xl bg-white rounded-lg shadow-xl p-6 space-y-4">
-              <DialogTitle className="text-2xl font-bold text-gray-800">
-                Inquiry Details
+              {/* <DialogTitle className="text-2xl font-bold text-gray-800 flex justify-center items-center">
+                Inquiry Details <RxCross2/>
+              </DialogTitle> */}
+              <DialogTitle className="text-2xl font-bold text-gray-800 flex items-center justify-between">
+                <span className="flex-1 text-center">Inquiry Details</span>
+                <RxCross2
+                  className="ml-4 cursor-pointer"
+                  onClick={() => setOpen(false)}
+                />
               </DialogTitle>
+
               <div className="flex items-center space-x-3">
                 <div className="flex items-center justify-center w-16 h-16 bg-slate-300 rounded-full">
                   <span className="text-xl font-medium text-black ">
@@ -163,13 +172,30 @@ const UploadCVData = () => {
                   <p className="text-sm font-semibold text-gray-600">Phone:</p>
                   <p className="text-gray-800">{selectedItem?.phone}</p>
                 </div>
+                <div className="mb-8">
+                  <p className="text-sm font-semibold text-gray-600 mb-1 capitalize">
+                    CV:
+                  </p>
+                  {selectedItem?.cv ? (
+                    <a
+                      href={selectedItem.cv}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white border px-4 py-2 rounded-md bg-primaryBlue"
+                    >
+                      View CV
+                    </a>
+                  ) : (
+                    <p className="text-gray-800">N/A</p>
+                  )}
+                </div>
                 {/* <div>
               <p className="text-sm font-semibold text-gray-600">Description:</p>
               <p className="text-gray-800">{selectedItem?.description}</p>
             </div> */}
               </div>
 
-              <div className="mt-6 flex justify-end">
+              {/* <div className="mt-6 flex justify-end">
                 <button
                   type="button"
                   className="px-4 py-2 bg-red-600 text-white rounded-md shadow hover:bg-red-500"
@@ -179,7 +205,7 @@ const UploadCVData = () => {
                 >
                   Close
                 </button>
-              </div>
+              </div> */}
             </DialogPanel>
           </div>
         </div>
@@ -195,11 +221,10 @@ const UploadCVData = () => {
       </div>
       <div className="rounded-sm border border-stroke bg-white  pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark  xl:pb-1">
         <div className="max-w-full overflow-x-auto">
-        {loading ? (
-        
+          {loading ? (
             <div className="flex justify-center items-center min-h-screen">
-            <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
-          </div>
+              <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+            </div>
           ) : packageData?.totalCount > 0 ? (
             <table className="w-full   table-auto">
               <thead>
@@ -264,15 +289,15 @@ const UploadCVData = () => {
             </p>
           )}
         </div>
-        {packageData?.totalPages>1 ?(
-        <div className="py-10">
-          <Pagination
-            totalPages={page}
-            currentPage={currentStep}
-            setCurrentPage={setCurrentStep}
-          />
-        </div>
-        ):null}
+        {packageData?.totalPages > 1 ? (
+          <div className="py-10">
+            <Pagination
+              totalPages={page}
+              currentPage={currentStep}
+              setCurrentPage={setCurrentStep}
+            />
+          </div>
+        ) : null}
       </div>
     </DefaultLayout>
   );
