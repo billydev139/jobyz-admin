@@ -67,7 +67,6 @@ const UploadCVData = () => {
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [packageData, setPackageData] = useState([]);
-  console.log("🚀 ~ GetAQuote ~ packageDataddddd:", packageData);
   const [error, setError] = useState("");
   const getAllInquiries = async () => {
     setLoading(true);
@@ -90,27 +89,63 @@ const UploadCVData = () => {
   useEffect(() => {
     getAllInquiries();
   }, [currentStep, searchQuery]);
-  const deleteInquiry = async (id) => {
-    try {
+  // const deleteInquiry = async (id) => {
+  //   try {
+  //     await api.delete(`https://api.jobyz.ch/api/contact/job/${id}`);
+  //     //   setPackageData((prevData) => prevData?.results?.filter((item) => item.id !== id)); // Remove deleted item
+  //     Swal.fire({
+  //       title: "Delete Successfully",
+  //       text: "Inquiry successfully deleted!",
+  //       icon: "success",
+  //       showConfirmButton: false,
+  //       timer: 1000,
+  //     });
+  //     getAllInquiries();
+  //     //   setSuccessMessage("Inquiry successfully deleted!");
+  //   } catch (err) {
+  //     Swal.fire({
+  //       title: "Error deleting inquiry",
+  //       text: "Failed to delete inquiry",
+  //       icon: "error",
+  //     });
+  //   }
+  // };
+ 
+ const deleteInquiry = async (id) => {
+  try {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to delete this inquiry? This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
       await api.delete(`https://api.jobyz.ch/api/contact/job/${id}`);
-      //   setPackageData((prevData) => prevData?.results?.filter((item) => item.id !== id)); // Remove deleted item
       Swal.fire({
-        title: "Delete Successfully",
+        title: "Deleted Successfully",
         text: "Inquiry successfully deleted!",
         icon: "success",
         showConfirmButton: false,
         timer: 1000,
       });
       getAllInquiries();
-      //   setSuccessMessage("Inquiry successfully deleted!");
-    } catch (err) {
-      Swal.fire({
-        title: "Error deleting inquiry",
-        text: "Failed to delete inquiry",
-        icon: "error",
-      });
     }
-  };
+  } catch (err) {
+    Swal.fire({
+      title: "Error deleting inquiry",
+      text: "Failed to delete inquiry",
+      icon: "error",
+    });
+  }
+};
+
+ 
+ 
   const handleView = (item) => {
     setSelectedItem(item);
     setOpen(true);
